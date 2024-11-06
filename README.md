@@ -89,3 +89,8 @@ make html
 
 `pacman -Ss mingw-w64-clang-x86_64-llvm`来安装
 
+
+
+#### VSCODE请打开仅格式化修改
+
+#### VSCODE已经移除clang-format，如有需要，自行定义
