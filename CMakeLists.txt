@@ -129,7 +129,7 @@ foreach(target IN LISTS r_targets)
             PUBLIC UNICODE
             PUBLIC _UNICODE
             PUBLIC LOCAL=1
-            PUBLIC ROOT_DIR=${ROOT_DIR}
+            PUBLIC "ROOT_DIR=\"${ROOT_DIR}\""
         )
     endif()
 

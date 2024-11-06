@@ -6,7 +6,7 @@ int main() {
     using namespace mc_particle;
     namespace bf = boost::filesystem;
 
-    datapack dp(R"(E:\PCL2\.minecraft\versions\1.16.5-Fabric 0.14.9-OptiFine_G8\saves\particle\datapacks)", "my_datapack");
+    datapack dp(path(ROOT_DIR) / "resource/public/datapacks", "my_datapack");
     dp_namespace ns = dp.create_namespace("example");
     mc_function func = ns.create_mc_function("", "test_func");
 
