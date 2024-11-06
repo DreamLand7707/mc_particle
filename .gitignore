@@ -1,0 +1,24 @@
+.cache/
+.vscode/
+build/
+Debug/
+Lib/
+source/test/
+test/
+all_projs
+Legacy.cmake
+cmake_dependence/dependence_analyse.exe
+cmake_dependence/dependency_analyse.o
+test.txt
+resource/private/
+CMakePresets.json
+.gdbinit
+.lldbinit
+.clangd
+MyEnvProfile.ps1
+dashboard.gdbinit
+dashboard1.py
+.svlint.toml
+# 这两个记得自己创建一下
+customize.cmake
+custom_dependence
