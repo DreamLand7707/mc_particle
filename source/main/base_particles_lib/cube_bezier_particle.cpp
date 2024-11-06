@@ -13,18 +13,42 @@ namespace mc_particle
         mk_shift = -(tbe(0) * mk_ratio);
         // bezier curve function: (1-t)^3 * A + t*(1-t)^2 * B + t^2*(1-t) * C + t^3 * D
 #define WARP(X) \
-    float_spec { X, length, prec }
+    (float_spec {(X), (length), (prec)})
         auto sh = WARP(mk_shift), ro = WARP(mk_ratio);
         for (int i = 0; i < 3; i++) {
             ssin << ((i == 0) ? ("x = (") : (i == 1 ? ("y = (") : ("z = (")));
-            ssin << std::format("(((1 - ({} + {} * t)) ^ 3) * {}) + "
-                                "((({} + {} * t) * (1 - ({} + {} * t)) ^ 2) * {}) + "
-                                "((({} + {} * t) ^ 2 * (1 - ({} + {} * t))) * {}) + "
-                                "((({} + {} * t) ^ 3) * {})",
+            ssin << std::format("("
+                                "   ((1 - ({} + {} * t)) ^ 3)"
+                                "   *"
+                                "   {}"
+                                ")"
+                                "+"
+                                "("
+                                "   ((1 - ({} + {} * t)) ^ 2)"
+                                "   *"
+                                "   ({} + {} * t)"
+                                "   *"
+                                "   {}"
+                                ")"
+                                "+"
+                                "("
+                                "   (1 - ({} + {} * t))"
+                                "   *"
+                                "   (({} + {} * t) ^ 2)"
+                                "   *"
+                                "   {}"
+                                ")"
+                                "+"
+                                "("
+                                "   (({} + {} * t) ^ 3)"
+                                "   *"
+                                "   {}"
+                                ")",
                                 sh, ro, WARP(from(i)),
-                                sh, ro, sh, ro, WARP(ctrl_point_1(i)),
-                                sh, ro, sh, ro, WARP(ctrl_point_2(i)),
+                                sh, ro, sh, ro, WARP(ctrl_point_1(i) * 3),
+                                sh, ro, sh, ro, WARP(ctrl_point_2(i) * 3),
                                 sh, ro, WARP(to(i)));
+            ssin << "); ";
         }
 #undef WARP
         return opt.format(ssin.str(), "null", length, prec);
