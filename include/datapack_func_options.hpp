@@ -112,6 +112,12 @@ namespace mc_particle
         explicit mc_function(const ptr_s<mc_function_internal> &x) : func_i(x) {}
 
      public:
+        enum format_mode {
+            APPEND,
+            REPLACE,
+            CLEAR
+        };
+
         friend class datapack;
         friend class dp_namespace;
 
@@ -152,7 +158,7 @@ namespace mc_particle
         void close() const { get_stream().close(); }
         [[nodiscard]] bool is_open() const { return get_stream().is_open(); }
         [[nodiscard]] mc_function clone() const;
-        [[nodiscard]] str format(int time = 0, int mode = 0) const;
+        [[nodiscard]] str format(int time = 0, format_mode mode = APPEND) const;
         [[nodiscard]] bool open() const {
             get_stream().open(get_function_path().string(), func_i->openmode);
             return get_stream().good();
