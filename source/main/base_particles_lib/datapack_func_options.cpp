@@ -279,15 +279,15 @@ namespace mc_particle
         return get_namespace().get_namespace_str() + ":" + func_p.lexically_relative(func_g).replace_extension().generic_string();
     }
 
-    str mc_function::format(int time, int mode) const {
+    str mc_function::format(int time, format_mode mode) const {
         if (time <= 0)
             return std::format("function {}", get_function_str());
         switch (mode) {
-        case 0:
+        case APPEND:
             return std::format("schedule function {} {}t append", get_function_str(), time);
-        case 1:
+        case REPLACE:
             return std::format("schedule function {} {}t replace", get_function_str(), time);
-        case 2:
+        case CLEAR:
             return std::format("schedule clear {}", get_function_str());
         default:
             return std::format("schedule function {} {}t append", get_function_str(), time);
