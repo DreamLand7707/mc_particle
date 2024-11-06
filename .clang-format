@@ -14,7 +14,7 @@ BraceWrapping:
   AfterClass: false
   AfterControlStatement: Never
   AfterEnum: false
-  AfterFunction: false
+  AfterFunction: true
   AfterNamespace: true
   AfterObjCDeclaration: false
   AfterStruct: false
