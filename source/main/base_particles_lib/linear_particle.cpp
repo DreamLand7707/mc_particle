@@ -184,9 +184,9 @@ namespace mc_particle
             vel = P * vel;
 
             fout << single_particle_opt.format(
-                        std::format("vx=((t==0)*({:{}.{}f}))+((t>0)*(({:{}.{}f})*vx));"
-                                    "vy=((t==0)*({:{}.{}f}))+((t>0)*(({:{}.{}f})*vy));"
-                                    "vz=((t==0)*({:{}.{}f}))+((t>0)*(({:{}.{}f})*vz));",
+                        std::format("vx=(({:{}.{}f})*({:{}.{}f})^t);"
+                                    "vy=(({:{}.{}f})*({:{}.{}f})^t);"
+                                    "vz=(({:{}.{}f})*({:{}.{}f})^t);",
                                     vel(0), length, prec, (1 - resistence), length, prec,
                                     vel(1), length, prec, (1 - resistence), length, prec,
                                     vel(2), length, prec, (1 - resistence), length, prec),
