@@ -1,10 +1,10 @@
 project(example_particle_lib LANGUAGES CXX)
 
-file(GLOB all_src RELATIVE ${PROJECT_SOURCE_DIR} "*.cpp")
+add_executable(particle_lib_example1 main.cpp)
+add_executable(particle_lib_example2 main2.cpp)
 
-set(target_name example_particle_lib_exe)
+target_link_libraries(particle_lib_example1 PUBLIC base_particle_lib_lib glad_lib)
+target_link_libraries(particle_lib_example2 PUBLIC base_particle_lib_lib glad_lib)
 
-add_executable(${target_name} ${all_src})
-target_link_libraries(${target_name} PUBLIC base_particle_lib_lib glad_lib)
-set_target_properties(${target_name} PROPERTIES RUNTIME_OUTPUT_NAME example_particle_lib)
-add_register_target(ROOT ${target_name})
+add_register_target(ROOT particle_lib_example1)
+add_register_target(ROOT particle_lib_example2)

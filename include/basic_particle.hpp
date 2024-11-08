@@ -13,6 +13,7 @@
 #include <sstream>
 #include <fstream>
 #include <functional>
+#include <locale>
 
 #include <cstring>
 #include <cmath>
@@ -25,6 +26,19 @@
 #include <type_traits>
 #include <concepts>
 #include <iterator>
+
+// data structure
+#include <vector>
+#include <deque>
+#include <list>
+#include <forward_list>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+
+#include <optional>
+
 
 namespace mc_particle
 {
