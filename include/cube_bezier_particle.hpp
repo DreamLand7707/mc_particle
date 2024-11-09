@@ -27,6 +27,7 @@ namespace mc_particle
             }
         [[nodiscard]] str solid_color_static_sequential_continuity_points(
             const particle_tick_parameter_options &opt,
+            const mc_function &target_file,
             InputIt points_begin, InputIt points_end);
     };
 
@@ -56,19 +57,17 @@ namespace mc_particle
     };
 
     class cube_bezier_integral_polynomial {
-     public:
+     private:
         real_number coff[5] {};
 
-     public:
-        explicit cube_bezier_integral_polynomial(
-            const Eigen::Matrix<real_number, 4, 3> &points) {
-            Eigen::Matrix4<real_number> conv_mat {
+        void _assign(const Eigen::Matrix<real_number, 3, 4> &points) {
+            static Eigen::Matrix4<real_number> conv_mat {
                 {-1,  3, -3, 1},
                 { 3, -6,  3, 0},
                 {-3,  3,  0, 0},
                 { 1,  0,  0, 0}
             };
-            Eigen::Matrix<real_number, Eigen::Dynamic, Eigen::Dynamic> raw_coff = conv_mat * points;
+            Eigen::Matrix<real_number, Eigen::Dynamic, Eigen::Dynamic> raw_coff = conv_mat * points.transpose();
             coff[0] = 9 * (std::pow(raw_coff(0, 0), 2) +
                            std::pow(raw_coff(0, 1), 2) +
                            std::pow(raw_coff(0, 2), 2));
@@ -89,6 +88,15 @@ namespace mc_particle
                            std::pow(raw_coff(2, 2), 2));
         }
 
+     public:
+        cube_bezier_integral_polynomial() = default;
+        cube_bezier_integral_polynomial(const cube_bezier_integral_polynomial &) = default;
+
+        explicit cube_bezier_integral_polynomial(
+            const Eigen::Matrix<real_number, 3, 4> &points) { _assign(points); }
+
+        void reassign(const Eigen::Matrix<real_number, 3, 4> &points) { _assign(points); }
+
         real_number operator()(real_number_cref t) const {
             return sqrt(pow(t, 4) * coff[0] +
                         pow(t, 3) * coff[1] +
@@ -98,11 +106,41 @@ namespace mc_particle
         }
     };
 
+    class cube_bezier_polynomial {
+     private:
+        Eigen::Matrix<real_number, Eigen::Dynamic, Eigen::Dynamic> coff {};
+
+        void _assign(const Eigen::Matrix<real_number, 3, 4> &points) {
+            static Eigen::Matrix4<real_number> conv_mat {
+                {-1,  3, -3, 1},
+                { 3, -6,  3, 0},
+                {-3,  3,  0, 0},
+                { 1,  0,  0, 0}
+            };
+            coff = conv_mat * points.transpose();
+        }
+
+     public:
+        cube_bezier_polynomial() = default;
+        cube_bezier_polynomial(const cube_bezier_polynomial &) = default;
+
+        explicit cube_bezier_polynomial(
+            const Eigen::Matrix<real_number, 3, 4> &points) { _assign(points); }
+
+        void reassign(const Eigen::Matrix<real_number, 3, 4> &points) { _assign(points); }
+
+        vector3D<real_number> operator()(real_number_cref t) const {
+            vector4D<real_number> T {pow(t, 3), pow(t, 2), t, 1};
+            return coff.transpose() * T;
+        }
+    };
+
     real_number legendre_d(integer_number_cref l, real_number_cref x);
     real_number find_legendre_root_at(integer_number_cref n, real_number_cref initial_guess, real_number_cref tolerance, integer_number_cref max_iterations);
     Eigen::VectorX<real_number> get_legendre_root(integer_number_cref l, real_number_cref tolerance, integer_number_cref max_iterations);
     template <unsigned int level, std::invocable<real_number> invt>
-    real_number gauss_legender_integral(const invt &func, real_number_cref from, real_number_cref to);
+    real_number gauss_legender_integral(const invt &func, real_number_cref from, real_number_cref to,
+                                        real_number_cref caldetail_error = 1e-16, integer_number_cref caldetail_times = 1000);
 
 
 } // namespace mc_particle

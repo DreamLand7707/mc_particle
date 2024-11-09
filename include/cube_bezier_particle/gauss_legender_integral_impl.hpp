@@ -6,8 +6,9 @@
 namespace mc_particle
 {
     template <unsigned int level, std::invocable<real_number> invt>
-    real_number gauss_legender_integral(const invt &func, real_number_cref from, real_number_cref to) {
-        static Eigen::Matrix<real_number, -1, -1> legender_root = get_legendre_root(level, 1e-16, 1000), Sx;
+    real_number gauss_legender_integral(const invt &func, real_number_cref from, real_number_cref to,
+                                        real_number_cref caldetail_error, integer_number_cref caldetail_times) {
+        static Eigen::Matrix<real_number, -1, -1> legender_root = get_legendre_root(level, caldetail_error, caldetail_times), Sx;
         static bool have = false;
         if (!have) {
             Eigen::Matrix<real_number, -1, -1> Sa(level, level), Sb(level, 1);

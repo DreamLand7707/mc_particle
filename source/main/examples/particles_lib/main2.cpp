@@ -17,7 +17,7 @@ int main() {
     Eigen::Matrix<real_number, 3, 4> points;
     points << A, B, C, D;
     std::cout << points << std::endl;
-    cube_bezier_integral_polynomial pol(points.transpose());
+    cube_bezier_integral_polynomial pol(points);
     real_number ans = 0;
     for (int i = 0; i < 10000; i++) {
         ans += pol((1.0 / 10000) * i) * (1.0 / 10000);

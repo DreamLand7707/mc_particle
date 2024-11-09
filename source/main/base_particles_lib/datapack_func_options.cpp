@@ -294,5 +294,15 @@ namespace mc_particle
         }
     }
 
+    bool mc_function::delete_temp_folder() const {
+        path temp_path = get_func_folder() / "temp" / (get_func_name() + "_temp");
+        if (fs::exists(temp_path))
+            fs::remove_all(temp_path);
+        temp_path = temp_path.parent_path();
+        if (fs::is_empty(temp_path))
+            fs::remove(temp_path);
+        return true;
+    }
+
 
 } // namespace mc_particle
