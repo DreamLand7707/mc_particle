@@ -307,18 +307,21 @@ namespace mc_particle
         str_stream ssin;
         const char_type *coord_str = relative_coord ? "~" : "";
         length_prec = {length, prec};
-        ssin << "particleex image "
-             << particle_name << ' '
-             << coord_str << fmt_real(coord(0)) << ' ' << coord_str << fmt_real(coord(1)) << ' ' << coord_str << fmt_real(coord(2)) << ' '
-             << path << ' '
-             << fmt_real(ratio) << ' '
-             << x_turn << ' ' << y_turn << ' ' << z_turn << ' '
-             << (overturn_mode == particle_image_options::zero ? "not " : (overturn_mode == particle_image_options::vertical ? "vertical " : "horizontally "))
-             << count_per_block << ' '
-             << fmt_real(initial_velocity(0)) << ' ' << fmt_real(initial_velocity(1)) << ' ' << fmt_real(initial_velocity(2)) << ' '
-             << age << ' '
-             << '\"' << velocity_expr << '\"' << ' '
-             << fmt_real(velt_counting_period);
+        ssin << "particleex image " << particle_name << ' ' << coord_str
+             << fmt_real(coord(0)) << ' ' << coord_str << fmt_real(coord(1))
+             << ' ' << coord_str << fmt_real(coord(2)) << ' ' << '\"' << path
+             << '\"' << ' '  // path 两边加上双引号
+             << fmt_real(ratio) << ' ' << x_turn << ' ' << y_turn << ' '
+             << z_turn << ' '
+             << (overturn_mode == particle_image_options::zero
+                     ? "not "
+                     : (overturn_mode == particle_image_options::vertical
+                            ? "vertical "
+                            : "horizontally "))
+             << count_per_block << ' ' << fmt_real(initial_velocity(0)) << ' '
+             << fmt_real(initial_velocity(1)) << ' '
+             << fmt_real(initial_velocity(2)) << ' ' << age << ' ' << '\"'
+             << velocity_expr << '\"' << ' ' << fmt_real(velt_counting_period);
 
         return ssin.str();
     }
