@@ -28,7 +28,7 @@ namespace mc_particle
         [[nodiscard]] str solid_color_static_sequential_continuity_points(
             const particle_tick_parameter_options &opt,
             const mc_function &target_file,
-            InputIt points_begin, InputIt points_end);
+            InputIt points_begin, InputIt points_end, bool closed = true);
     };
 
     using empty_cube_bezier_point_t = std::nullopt_t;

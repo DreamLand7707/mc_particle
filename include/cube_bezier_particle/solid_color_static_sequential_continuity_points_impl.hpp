@@ -11,7 +11,7 @@ namespace mc_particle
         }
     str cube_bezier_particle::solid_color_static_sequential_continuity_points(
         const particle_tick_parameter_options &opt, const mc_function &target_file,
-        InputIt points_begin, InputIt points_end) {
+        InputIt points_begin, InputIt points_end, bool closed) {
         real_number total = 0;
         std::vector<real_number> ratio_per_section;
         cube_bezier_integral_polynomial poly;
@@ -20,16 +20,24 @@ namespace mc_particle
         vector3D<real_number> ctrl1, ctrl2;
         while (true) {
             leftp = rightp++;
-            if (rightp == points_end)
-                break;
+            if (rightp == points_end) {
+                if (closed)
+                    rightp = points_begin;
+                else
+                    break;
+            }
             ctrl1 = leftp->right.value_or(leftp->left.has_value()
                                               ? (leftp->point + leftp->point - leftp->left.value())
                                               : (leftp->point));
-            ctrl2 = rightp->left.value_or(rightp->point);
+            ctrl2 = rightp->left.value_or(rightp->right.has_value()
+                                              ? (rightp->point + rightp->point - rightp->right.value())
+                                              : (rightp->point));
             points << leftp->point, ctrl1, ctrl2, rightp->point;
             poly.reassign(points);
             ratio_per_section.push_back(gauss_legender_integral<9>(poly, 0, 1));
             total += ratio_per_section.back();
+            if (rightp == points_begin)
+                break;
         }
         if (ratio_per_section.empty())
             return "";
@@ -46,12 +54,19 @@ namespace mc_particle
         vector3D<real_number> draw_point {};
         rightp = points_begin;
         leftp = rightp++;
+        if (rightp == points_end && closed) {
+            rightp = points_begin;
+        }
         ctrl1 = leftp->right.value_or(leftp->left.has_value()
                                           ? (leftp->point + leftp->point - leftp->left.value())
                                           : (leftp->point));
-        ctrl2 = rightp->left.value_or(rightp->point);
+        ctrl2 = rightp->left.value_or(rightp->right.has_value()
+                                          ? (rightp->point + rightp->point - rightp->right.value())
+                                          : (rightp->point));
         points << leftp->point, ctrl1, ctrl2, rightp->point;
         cube_bezier_polynomial bezier_ploy(points);
+        if (!target_file.delete_all_temp_file())
+            std::cerr << "Can't delete temp file!" << std::endl;
         mc_function curr_func = target_file.create_temp_file(std::format("temp-{}", file_index));
 
         if (!(curr_func.create_fs() && curr_func.open()))
@@ -64,16 +79,24 @@ namespace mc_particle
         particle_normal_options single_particle_opt(opt.rgba, {0, 0, 0}, 1, opt);
         for (integer_number i = 0; i < particle_num; i++) {
             if (c_val > c_end) {
+                if (rightp == points_begin)
+                    break;
                 section++;
                 c_begin = c_end;
                 c_end += (t_begin_end(1) - t_begin_end(0)) * ratio_per_section[section];
                 leftp = rightp++;
-                if (rightp == points_end)
-                    break;
+                if (rightp == points_end) {
+                    if (closed)
+                        rightp = points_begin;
+                    else
+                        break;
+                }
                 ctrl1 = leftp->right.value_or(leftp->left.has_value()
                                                   ? (leftp->point + leftp->point - leftp->left.value())
                                                   : (leftp->point));
-                ctrl2 = rightp->left.value_or(rightp->point);
+                ctrl2 = rightp->left.value_or(rightp->right.has_value()
+                                                  ? (rightp->point + rightp->point - rightp->right.value())
+                                                  : (rightp->point));
                 points << leftp->point, ctrl1, ctrl2, rightp->point;
                 bezier_ploy.reassign(points);
             }

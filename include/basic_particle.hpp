@@ -112,20 +112,15 @@ namespace mc_particle
 
     class particle_basic_options {
      public:
-        str particle_name;
-        vector3D<real_number> coord;
-        vector3D<real_number> initial_velocity;
-        real_number velt_counting_period;
-        integer_number age;
-        bool relative_coord;
+        str particle_name {"minecraft:end_rod"};
+        vector3D<real_number> coord {0, 0, 0};
+        vector3D<real_number> initial_velocity {0, 0, 0};
+        real_number velt_counting_period {1.0};
+        integer_number age {0};
+        bool relative_coord {false};
 
      public:
-        particle_basic_options() : particle_name("minecraft:end_rod"),
-                                   coord({0, 0, 0}),
-                                   initial_velocity({0, 0, 0}),
-                                   velt_counting_period(1.0),
-                                   age(0),
-                                   relative_coord(false) {};
+        particle_basic_options() = default;
         particle_basic_options(str particle_name_,
                                vector3D<real_number> coord_,
                                vector3D<real_number> initial_velocity_,
@@ -155,15 +150,12 @@ namespace mc_particle
     // /particleex normal
     class particle_normal_options : public particle_basic_options {
      public:
-        vector4D<real_number> rgba;
-        vector3D<real_number> range;
-        integer_number count;
+        vector4D<real_number> rgba {1.0, 1.0, 1.0, 1.0};
+        vector3D<real_number> range {1.0, 1.0, 1.0};
+        integer_number count {100};
 
      public:
-        particle_normal_options() : particle_basic_options(),
-                                    rgba {1.0, 1.0, 1.0, 1.0},
-                                    range {1.0, 1.0, 1.0},
-                                    count(100) {}
+        particle_normal_options() : particle_basic_options() {}
         particle_normal_options(vector4D<real_number> rgba_,
                                 vector3D<real_number> range_, integer_number_cref count_,
                                 const particle_basic_options &parent);
@@ -180,15 +172,12 @@ namespace mc_particle
     // /particleex conditional
     class particle_conditional_options : public particle_basic_options {
      public:
-        vector4D<real_number> rgba;
-        vector3D<real_number> range;
-        real_number counting_period;
+        vector4D<real_number> rgba {1.0, 1.0, 1.0, 1.0};
+        vector3D<real_number> range {1.0, 1.0, 1.0};
+        real_number counting_period {0.1};
 
      public:
-        particle_conditional_options() : particle_basic_options(),
-                                         rgba {1.0, 1.0, 1.0, 1.0},
-                                         range {1.0, 1.0, 1.0},
-                                         counting_period(0.1) {}
+        particle_conditional_options() : particle_basic_options() {}
         particle_conditional_options(vector4D<real_number> rgba_,
                                      vector3D<real_number> range_, real_number_cref counting_period_,
                                      const particle_basic_options &parent);
@@ -204,18 +193,14 @@ namespace mc_particle
 
     class parameter_particle_options : public particle_basic_options {
      private:
-        vector2D<real_number> t_begin_end;
-        integer_number particle_num;
-        real_number para_counting_period;
-        bool polar;
-        bool matching = false;
+        vector2D<real_number> t_begin_end {0.0, 10.0};
+        integer_number particle_num {100};
+        real_number para_counting_period {0.1};
+        bool polar {false};
+        bool matching {false};
 
      public:
-        parameter_particle_options() : particle_basic_options(),
-                                       t_begin_end {0.0, 10.0},
-                                       particle_num(100),
-                                       para_counting_period(0.1),
-                                       polar(false) {}
+        parameter_particle_options() : particle_basic_options() {}
         parameter_particle_options(vector2D<real_number> t_begin_end_, integer_number_cref particle_num_, real_number_cref para_count_period_, bool polar_,
                                    const particle_basic_options &parent);
 
@@ -257,11 +242,10 @@ namespace mc_particle
     // /particleex parameter /particleex polarparameter
     class particle_parameter_options : public parameter_particle_options {
      public:
-        vector4D<real_number> rgba;
+        vector4D<real_number> rgba {1.0, 1.0, 1.0, 1.0};
 
      public:
-        particle_parameter_options() : parameter_particle_options(),
-                                       rgba {1.0, 1.0, 1.0, 1.0} {}
+        particle_parameter_options() : parameter_particle_options() {}
         particle_parameter_options(vector4D<real_number> rgba_,
                                    const parameter_particle_options &parent);
 
@@ -288,11 +272,10 @@ namespace mc_particle
 
     class tick_parameter_particle_options : public parameter_particle_options {
      public:
-        integer_number gent_counting_per_tick;
+        integer_number gent_counting_per_tick {10};
 
      public:
-        tick_parameter_particle_options() : parameter_particle_options(),
-                                            gent_counting_per_tick(10) {}
+        tick_parameter_particle_options() : parameter_particle_options() {}
         tick_parameter_particle_options(integer_number_cref gent_counting_per_tick_,
                                         const parameter_particle_options &parent);
 
@@ -307,10 +290,9 @@ namespace mc_particle
     // /particleex tickparameter /particleex tickpolarparameter
     class particle_tick_parameter_options : public tick_parameter_particle_options {
      public:
-        vector4D<real_number> rgba;
+        vector4D<real_number> rgba = {1.0, 1.0, 1.0, 1.0};
 
-        particle_tick_parameter_options() : tick_parameter_particle_options(),
-                                            rgba {1.0, 1.0, 1.0, 1.0} {}
+        particle_tick_parameter_options() : tick_parameter_particle_options() {}
         explicit particle_tick_parameter_options(vector4D<real_number> rgba_,
                                                  const tick_parameter_particle_options &parent);
 
@@ -340,16 +322,13 @@ namespace mc_particle
 
     class image_particle_options : public particle_basic_options {
      public:
-        str path;
-        real_number ratio;
-        integer_number count_per_block;
+        str path {"./default.png"};
+        real_number ratio {1.0};
+        integer_number count_per_block {10};
 
 
      public:
-        image_particle_options() : particle_basic_options(),
-                                   path("./default.png"),
-                                   ratio(1.0),
-                                   count_per_block(10) {}
+        image_particle_options() : particle_basic_options() {}
         image_particle_options(str path_,
                                real_number_cref ratio_,
                                integer_number_cref count_per_block_,

@@ -295,12 +295,32 @@ namespace mc_particle
     }
 
     bool mc_function::delete_temp_folder() const {
-        path temp_path = get_func_folder() / "temp" / (get_func_name() + "_temp");
+        path temp_path = create_temp_file("_").get_function_path().parent_path();
         if (fs::exists(temp_path))
             fs::remove_all(temp_path);
         temp_path = temp_path.parent_path();
         if (fs::is_empty(temp_path))
             fs::remove(temp_path);
+        return true;
+    }
+
+
+    bool mc_function::delete_all_temp_file() const {
+        path temp_path = create_temp_file("_").get_function_path().parent_path();
+        if (fs::exists(temp_path))
+            for (auto &entry : fs::directory_iterator(temp_path)) {
+                try {
+                    if (fs::is_directory(entry.path())) {
+                        fs::remove_all(entry.path());
+                    }
+                    else {
+                        fs::remove(entry.path());
+                    }
+                }
+                catch (const fs::filesystem_error &e) {
+                    std::cerr << "Error: " << e.what() << '\n';
+                }
+            }
         return true;
     }
 
