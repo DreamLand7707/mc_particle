@@ -168,9 +168,18 @@ namespace mc_particle
             return get_stream().good();
         }
         template <class T>
+        const mc_function &operator<<(T &&arg) const {
+            get_stream() << std::forward<T &&>(arg);
+            return *this;
+        }
+        template <class T>
         mc_function &operator<<(T &&arg) {
             get_stream() << std::forward<T &&>(arg);
             return *this;
         }
+        [[nodiscard]] mc_function create_temp_file(const str &file_name) const { return get_namespace().create_mc_function(get_func_folder() / "temp" / (get_func_name() + "_temp"), file_name); }
+        [[nodiscard]] bool delete_temp_file(const str &file_name) const { return create_temp_file(file_name).delete_fs(); }
+        [[nodiscard]] bool delete_temp_folder() const;
+        [[nodiscard]] bool delete_all_temp_file() const;
     };
 } // namespace mc_particle

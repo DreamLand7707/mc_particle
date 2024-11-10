@@ -53,4 +53,44 @@ namespace mc_particle
 #undef WARP
         return opt.format(ssin.str(), "null", length, prec);
     }
+
+    real_number legendre_d(integer_number_cref l, real_number_cref x) {
+        if (l == 0)
+            return 0.0;
+        if (l == 1)
+            return 1.0;
+        return l * ((boost::math::legendre_p(l - 1, x) - x * boost::math::legendre_p(l, x)) / (1 - x * x));
+    }
+
+    real_number find_legendre_root_at(integer_number_cref n,
+                                      real_number_cref initial_guess,
+                                      real_number_cref tolerance,
+                                      integer_number_cref max_iterations) {
+        real_number x = initial_guess;
+        for (int i = 0; i < max_iterations; ++i) {
+            real_number Pn = boost::math::legendre_p(n, x);
+            real_number Pn_prime = legendre_d(n, x);
+            real_number x_new = x - Pn / Pn_prime;
+
+            if (std::abs(x_new - x) < tolerance) {
+                return x_new;
+            }
+
+            x = x_new;
+        }
+
+        return x;
+    }
+
+    Eigen::VectorX<real_number> get_legendre_root(integer_number_cref l, real_number_cref tolerance, integer_number_cref max_iterations) {
+        integer_number num_roots = l;
+        Eigen::VectorXd ret(l);
+        for (integer_number i = 1; i <= num_roots; ++i) {
+            real_number initial_guess = std::cos(std::numbers::pi * (4 * i - 1) / (4 * num_roots + 2));
+            real_number root = find_legendre_root_at(num_roots, initial_guess, tolerance, max_iterations);
+            ret(i - 1) = root;
+        }
+        std::sort(ret.begin(), ret.end());
+        return ret;
+    }
 } // namespace mc_particle
