@@ -15,13 +15,13 @@
 
 **任务接受情况**：
 
-1. [name of contributer]
+1. [hy258]
 
 **任务完成情况**：未完成
 
 **任务完成所处分支**：
 
-1. [name of contributer’s branch]
+1. [hy258_dev_svg_analyse]
 
 **任务奖励**：
 
