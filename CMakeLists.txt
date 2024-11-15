@@ -78,6 +78,21 @@ add_sorts_projects_directories(
     "${ROOT_sort_projs}"
 )
 
+if(${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
+    set(CMAKE_C_FLAGS_DEBUG
+        "-O0 -gdwarf-4"
+        CACHE STRING "Additional C flags for debug mode" FORCE)
+    set(CMAKE_CXX_FLAGS_DEBUG
+        "-O0 -gdwarf-4"
+        CACHE STRING "Additional Cxx flags for debug mode" FORCE)
+    set(CMAKE_C_FLAGS_RELWITHDEBINFO
+        "-O2 -DNDEBUG -gdwarf-4"
+        CACHE STRING "Additional C flags for relWithInfo mode" FORCE)
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO
+        "-O2 -DNDEBUG -gdwarf-4"
+        CACHE STRING "Additional Cxx flags for relWithInfo mode" FORCE)
+endif()
+
 get_register_target(ROOT r_targets)
 
 enable_testing()
