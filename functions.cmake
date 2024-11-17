@@ -65,6 +65,8 @@ function(add_register_target suffix target)
     set_register_target_properties(${target} NOT_DEFAULT_DEFINITION OFF)
     set_register_target_properties(${target} NOT_DEFAULT_DEBUG_SIGN OFF)
     set_register_target_properties(${target} NOT_DEFAULT_COMPILE_OPTIONS OFF)
+    set_register_target_properties(${target} TARGET_PROJECT_SOURCE_PATH ${PROJECT_SOURCE_DIR})
+    set_register_target_properties(${target} TARGET_NEED_DETACHED_DIR OFF)
 endfunction()
 
 function(set_register_target_properties target ...)
@@ -126,14 +128,27 @@ function(make_all_proj_filemap projs_relative_path proj_flag_files all_projs_fil
     set(${out_projs} "${proj_content}" PARENT_SCOPE)
 endfunction()
 
-function(make_dependencies_parser makefile_relative_path ccompiler cxxcompiler code_name output_execuable_name)
+function(make_dependencies_parser makefile_relative_path ccompiler cxxcompiler code_name output_execuable_name output_execuable_dir)
+    execute_process(COMMAND
+        cmake
+        "-B ${ROOT_dependency_dir}/build"
+        "-S ${ROOT_dependency_dir}"
+        "-G ${CMAKE_GENERATOR}"
+        "-DCMAKE_C_COMPILER=${ccompiler}"
+        "-DCMAKE_CXX_COMPILER=${cxxcompiler}"
+        "-DROOT_dependency_dir:STRING=${makefile_relative_path}"
+        "-DROOT_dependence_exe_name:STRING=${output_execuable_name}"
+        "-Dcode_name:STRING=${code_name}"
+        "-DROOT_dependency_executable_dir:STRING=${output_execuable_dir}"
+        "-DROOT_dependence_standard:STRING=20"
+    )
     execute_process(
-        COMMAND make
-        -C ${makefile_relative_path}
-        C_COMPLER=${ccompiler}
-        CXX_COMPLER=${cxxcompiler}
-        OUTPUT_EXE=${output_execuable_name}
-        CODE_NAME=${code_name}
+        COMMAND
+        cmake
+        "--build"
+        "${ROOT_dependency_dir}/build"
+        "--config"
+        "Release"
     )
 endfunction()
 
