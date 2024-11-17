@@ -173,7 +173,7 @@ namespace mc_particle
         P << plane_x, plane_y, plane_z;
 
         if (!(target_file.create_fs() && target_file.open()))
-            throw std::out_of_range("Can't Create Or Open Function File Correctly!");
+            throw std::runtime_error("Can't Create Or Open Function File Correctly!");
         auto &&fout = target_file.get_stream();
         for (integer_number it = 0; it < opt.get_particle_num(); ++it) {
             t_ = (t - tbe(0)) / (tbe(1) - tbe(0));

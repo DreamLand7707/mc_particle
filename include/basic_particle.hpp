@@ -13,6 +13,7 @@
 #include <sstream>
 #include <fstream>
 #include <functional>
+#include <regex>
 #include <locale>
 
 #include <cstring>
@@ -63,8 +64,14 @@ namespace mc_particle
     template <class T>
     using matrix4 = Eigen::Matrix4<T>;
 
-    template <class T, int r, int l>
+    template <class T, int r = Eigen::Dynamic, int l = Eigen::Dynamic>
     using matrix = Eigen::Matrix<T, r, l>;
+
+    template <class T, int l = Eigen::Dynamic>
+    using matrixL = Eigen::Matrix<T, Eigen::Dynamic, l>;
+
+    template <class T, int r = Eigen::Dynamic>
+    using vector = Eigen::Vector<T, r>;
 
     template <class T>
     using ptr_s = std::shared_ptr<T>;
