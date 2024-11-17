@@ -69,6 +69,8 @@ find_package(OpenGL REQUIRED)
 find_package(ICU REQUIRED COMPONENTS data i18n io test tu uc)
 find_package(Python3 ${HOST_PYTHON_VAR_RANGE} COMPONENTS Interpreter Development NumPy REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
+find_package(libxml2 CONFIG REQUIRED)
+find_package(OpenCL REQUIRED)
 
 pkg_check_modules(gmp REQUIRED IMPORTED_TARGET gmp)
 pkg_check_modules(gmpxx REQUIRED IMPORTED_TARGET gmpxx)
@@ -146,6 +148,10 @@ foreach(target IN LISTS r_targets)
             OpenGL::GL OpenGL::GLU
 
             icudt.dll icuin.dll icuio.dll icutest.dll icutu.dll icuuc.dll
+
+            LibXml2::LibXml2
+
+            OpenCL::OpenCL
 
             ${Python3_LIBRARY_RELEASE}
         )
