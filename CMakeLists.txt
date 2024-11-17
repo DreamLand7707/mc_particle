@@ -41,6 +41,7 @@ make_dependencies_parser(
     "${CMAKE_CXX_COMPILER}"
     "dependency_analyse"
     "${ROOT_dependence_exe_name}"
+    "${ROOT_dependency_executable_dir}"
 )
 
 parse_dependencies(
@@ -52,6 +53,10 @@ parse_dependencies(
     ROOT_sort_projs
 )
 
+if(NOT HOST_PYTHON_VAR_RANGE)
+    set(HOST_PYTHON_VAR_RANGE 3.10...3.13)
+endif()
+
 open_register_target(ROOT)
 clear_register_target(ROOT)
 
@@ -62,6 +67,10 @@ find_package(PkgConfig REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(ICU REQUIRED COMPONENTS data i18n io test tu uc)
+find_package(Python3 ${HOST_PYTHON_VAR_RANGE} COMPONENTS Interpreter Development NumPy REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
+find_package(libxml2 CONFIG REQUIRED)
+find_package(OpenCL REQUIRED)
 
 pkg_check_modules(gmp REQUIRED IMPORTED_TARGET gmp)
 pkg_check_modules(gmpxx REQUIRED IMPORTED_TARGET gmpxx)
@@ -70,6 +79,21 @@ add_sorts_projects_directories(
     "${ROOT_project_flag}"
     "${ROOT_sort_projs}"
 )
+
+if(${CMAKE_C_COMPILER_ID} STREQUAL "GNU")
+    set(CMAKE_C_FLAGS_DEBUG
+        "-O0 -gdwarf-4"
+        CACHE STRING "Additional C flags for debug mode" FORCE)
+    set(CMAKE_CXX_FLAGS_DEBUG
+        "-O0 -gdwarf-4"
+        CACHE STRING "Additional Cxx flags for debug mode" FORCE)
+    set(CMAKE_C_FLAGS_RELWITHDEBINFO
+        "-O2 -DNDEBUG -gdwarf-4"
+        CACHE STRING "Additional C flags for relWithInfo mode" FORCE)
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO
+        "-O2 -DNDEBUG -gdwarf-4"
+        CACHE STRING "Additional Cxx flags for relWithInfo mode" FORCE)
+endif()
 
 get_register_target(ROOT r_targets)
 
@@ -88,9 +112,12 @@ foreach(target IN LISTS r_targets)
     get_register_target_property(${target} NOT_DEFAULT_OUTPUT_DIRECTORY temp)
 
     if(NOT ${temp})
+        get_register_target_property(${target} TARGET_NEED_DETACHED_DIR temp2)
         set_target_properties(${target} PROPERTIES
-            RUNTIME_OUTPUT_DIRECTORY "${ROOT_DIR}/Debug/${target}"
-            ARCHIVE_OUTPUT_DIRECTORY "${ROOT_DIR}/Lib/${target}"
+            LIBRARY_OUTPUT_DIRECTORY "${ROOT_DIR}/Output/Lib/$<$<BOOL:${temp2}>:${target}>"
+            RUNTIME_OUTPUT_DIRECTORY_DEBUG "${ROOT_DIR}/Output/Debug/$<$<BOOL:${temp2}>:${target}>"
+            RUNTIME_OUTPUT_DIRECTORY_RELEASE "${ROOT_DIR}/Output/Release/$<$<BOOL:${temp2}>:${target}>"
+            ARCHIVE_OUTPUT_DIRECTORY "${ROOT_DIR}/Output/ARCH/$<$<BOOL:${temp2}>:${target}>"
         )
     endif()
 
@@ -98,14 +125,16 @@ foreach(target IN LISTS r_targets)
 
     if(NOT ${temp})
         target_include_directories(${target}
-            PUBLIC ${ROOT_include_dir}
+            PRIVATE ${ROOT_include_dir}
+            PRIVATE ${Python3_INCLUDE_DIRS}
+            PRIVATE ${Python3_NumPy_INCLUDE_DIRS}
         )
     endif()
 
     get_register_target_property(${target} NOT_DEFAULT_LIBRARY temp)
 
     if(NOT ${temp})
-        target_link_libraries(${target} PUBLIC
+        target_link_libraries(${target} PRIVATE
             Eigen3::Eigen
             Boost::filesystem Boost::iostreams Boost::locale
             GSL::gsl GSL::gslcblas
@@ -119,17 +148,25 @@ foreach(target IN LISTS r_targets)
             OpenGL::GL OpenGL::GLU
 
             icudt.dll icuin.dll icuio.dll icutest.dll icutu.dll icuuc.dll
+
+            LibXml2::LibXml2
+
+            OpenCL::OpenCL
+
+            ${Python3_LIBRARY_RELEASE}
         )
     endif()
 
     get_register_target_property(${target} NOT_DEFAULT_DEFINITION temp)
 
     if(NOT ${temp})
+        get_register_target_property(${target} TARGET_PROJECT_SOURCE_PATH temp2)
         target_compile_definitions(${target}
-            PUBLIC UNICODE
-            PUBLIC _UNICODE
-            PUBLIC LOCAL=1
-            PUBLIC "ROOT_DIR=\"${ROOT_DIR}\""
+            PRIVATE UNICODE
+            PRIVATE _UNICODE
+            PRIVATE LOCAL=1
+            PRIVATE "ROOT_DIR=\"${ROOT_DIR}\""
+            PRIVATE "PROJECT_DIR=\"${temp2}\""
         )
     endif()
 
@@ -138,7 +175,7 @@ foreach(target IN LISTS r_targets)
     if(NOT ${temp})
         if(${CMAKE_BUILD_TYPE} EQUAL Debug)
             target_compile_options(${target}
-                PUBLIC "-g"
+                PRIVATE "-g"
             )
         endif()
     endif()
@@ -146,9 +183,14 @@ foreach(target IN LISTS r_targets)
     get_register_target_property(${target} NOT_DEFAULT_COMPILE_OPTIONS temp)
 
     if(NOT ${temp})
+        if(${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
+            target_compile_options(${target}
+                PRIVATE "--target=x86_64-pc-windows-gnu"
+            )
+        endif()
+
         target_compile_options(${target}
-            PUBLIC "--target=x86_64-pc-windows-gnu"
-            PUBLIC -Wno-deprecated-enum-compare-conditional
+            PRIVATE -Wno-deprecated-enum-compare-conditional
         )
     endif()
 endforeach()

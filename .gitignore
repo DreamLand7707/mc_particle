@@ -2,6 +2,7 @@
 .vscode/
 .clang-format
 build/
+Output/
 Debug/
 Lib/
 source/test/
@@ -10,7 +11,9 @@ all_projs
 Legacy.cmake
 cmake_dependence/dependence_analyse.exe
 cmake_dependence/dependency_analyse.o
-test.txt
+cmake_dependence/build
+*.txt
+!CMakeLists.txt
 resource/private/
 CMakePresets.json
 .gdbinit

@@ -153,7 +153,7 @@ namespace mc_particle
 
         void set_safety_check(bool s) const { func_i->safety_check = s; }
         void set_recursion(bool s) const { func_i->recursion = s; }
-        void set_openmode(int s) const { func_i->openmode = s; }
+        void set_openmode(int s) const { func_i->openmode = std::ios::openmode(s); }
 
         void close() const { get_stream().close(); }
         [[nodiscard]] bool is_open() const { return get_stream().is_open(); }
