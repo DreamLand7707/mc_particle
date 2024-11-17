@@ -49,6 +49,13 @@ namespace mc_particle
         return gradual_color_static_sequential(opt, from, to, list.begin(), list.end());
     }
 
+    str linear_particle::gradual_color_static_instantaneous(
+        const particle_rgba_parameter_options &opt,
+        const vector3D<real_number> &from, const vector3D<real_number> &to,
+        std::initializer_list<color_position> list) const {
+        return gradual_color_static_instantaneous(opt, from, to, list.begin(),
+                                                  list.end());
+    }
 
     str linear_particle::solid_color_static_spiral_sequential(const particle_tick_parameter_options &opt,
                                                               const vector3D<real_number> &from,
@@ -81,25 +88,21 @@ namespace mc_particle
         }
         plane_z = plane_y.cross(plane_x);
 
-
-        real_number fi = 2.0 * std::numbers::pi_v<real_number> * circles / (tbe(1) - tbe(0)),
-                    bias1 = tbe(0);
+        real_number fi = 2.0 * std::numbers::pi_v<real_number> * circles /
+                         (tbe(1) - tbe(0)),
+                    bias1 = tbe(0);  // 每一t移动了多少角度
 
         str_stream ssin[4];
-        ssin[0] << std::format("(({}({:{}.{}f}))*(sin(({:{}.{}f})*(t+({:{}.{}f}))+({:{}.{}f}))))",
-                               clockwise ? "-" : "",
-                               radius, length, prec,
-                               fi, length, prec,
-                               bias1, length, prec,
-                               rad_bias, length, prec);
-        ssin[1] << std::format("(({:{}.{}f})*t+({:{}.{}f}))",
-                               solve_x(0), length, prec,
-                               solve_x(1), length, prec);
-        ssin[2] << std::format("(({:{}.{}f})*(cos(({:{}.{}f})*(t+({:{}.{}f}))+({:{}.{}f}))))",
-                               radius, length, prec,
-                               fi, length, prec,
-                               bias1, length, prec,
-                               rad_bias, length, prec);
+        ssin[0] << std::format(
+            "(({}({:{}.{}f}))*(sin(({:{}.{}f})*(t+({:{}.{}f}))+({:{}.{}f}))))",
+            clockwise ? "-" : "", radius, length, prec, fi, length, prec, bias1,
+            length, prec, rad_bias, length, prec);
+        ssin[1] << std::format("(({:{}.{}f})*t+({:{}.{}f}))", solve_x(0),
+                               length, prec, solve_x(1), length, prec);
+        ssin[2] << std::format(
+            "(({:{}.{}f})*(cos(({:{}.{}f})*(t+({:{}.{}f}))+({:{}.{}f}))))",
+            radius, length, prec, fi, length, prec, bias1, length, prec,
+            rad_bias, length, prec);
 
         ssin[3] << std::format(
             " x = "
@@ -117,23 +120,22 @@ namespace mc_particle
             "({:{}.{}f})*({})+"
             "({:{}.{}f})*({})+"
             "({:{}.{}f});",
-            plane_x(0), length, prec, ssin[0].str(),
-            plane_y(0), length, prec, ssin[1].str(),
-            plane_z(0), length, prec, ssin[2].str(),
-            from(0), length, prec,
+            plane_x(0), length, prec, ssin[0].str(), plane_y(0), length, prec,
+            ssin[1].str(), plane_z(0), length, prec, ssin[2].str(), from(0),
+            length, prec,
 
-            plane_x(1), length, prec, ssin[0].str(),
-            plane_y(1), length, prec, ssin[1].str(),
-            plane_z(1), length, prec, ssin[2].str(),
-            from(1), length, prec,
+            plane_x(1), length, prec, ssin[0].str(), plane_y(1), length, prec,
+            ssin[1].str(), plane_z(1), length, prec, ssin[2].str(), from(1),
+            length, prec,
 
-            plane_x(2), length, prec, ssin[0].str(),
-            plane_y(2), length, prec, ssin[1].str(),
-            plane_z(2), length, prec, ssin[2].str(),
-            from(2), length, prec);
+            plane_x(2), length, prec, ssin[0].str(), plane_y(2), length, prec,
+            ssin[1].str(), plane_z(2), length, prec, ssin[2].str(), from(2),
+            length, prec);
 
         return opt.format(ssin[3].str(), "null", length, prec);
     }
+
+    
 
     str linear_particle::solid_color_expand_spiral_instantaneous_file(const particle_parameter_options &opt,
                                                                       const mc_function &target_file,
