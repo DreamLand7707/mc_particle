@@ -173,14 +173,18 @@ namespace mc_particle
         str_stream ssin;
         const char_type *coord_str = relative_coord ? "~" : "";
         length_prec = {length, prec};
-        ssin << "particleex " << (get_polar() ? "rgbapolarparameter " : "rgbaparameter ")
-             << particle_name << ' '
-             << coord_str << fmt_real(coord(0)) << ' ' << coord_str << fmt_real(coord(1)) << ' ' << coord_str << fmt_real(coord(2)) << ' '
-             << fmt_real(initial_velocity(0)) << ' ' << fmt_real(initial_velocity(1)) << ' ' << fmt_real(initial_velocity(2)) << ' '
-             << fmt_real(get_t_begin_end()(0)) << ' ' << fmt_real(get_t_begin_end()(1) + get_para_counting_period() / 2.0) << ' '
-             << rgba_parameter_expr << ' '
-             << fmt_real(get_para_counting_period()) << ' '
-             << age << ' '
+        ssin << "particleex "
+             << (get_polar() ? "rgbapolarparameter " : "rgbaparameter ")
+             << particle_name << ' ' << coord_str << fmt_real(coord(0)) << ' '
+             << coord_str << fmt_real(coord(1)) << ' ' << coord_str
+             << fmt_real(coord(2)) << ' ' << fmt_real(initial_velocity(0))
+             << ' ' << fmt_real(initial_velocity(1)) << ' '
+             << fmt_real(initial_velocity(2)) << ' '
+             << fmt_real(get_t_begin_end()(0)) << ' '
+             << fmt_real(get_t_begin_end()(1) +
+                         get_para_counting_period() / 2.0)
+             << ' ' << '\"' << rgba_parameter_expr << '\"' << ' '
+             << fmt_real(get_para_counting_period()) << ' ' << age << ' '
              << '\"' << velocity_expr << '\"' << ' '
              << fmt_real(velt_counting_period);
 
