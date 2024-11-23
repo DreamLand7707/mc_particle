@@ -33,7 +33,9 @@ namespace mc_particle
         ssin_rgba[1] << " cg = ";
         ssin_rgba[2] << " cb = ";
         ssin_rgba[3] << " alpha = ";
-        color_position curr = {0, {1.0, 1.0, 1.0, 1.0}};
+        color_position curr = {
+            0, {1.0, 1.0, 1.0, 1.0}
+        };
         if (iter_begin != iter_end) {
             curr = *iter_begin;
             ++iter_begin;
