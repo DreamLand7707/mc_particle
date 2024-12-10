@@ -75,6 +75,13 @@ namespace mc_particle
 
     template <class T>
     using ptr_s = std::shared_ptr<T>;
+
+    template <class T, class Dp = std::default_delete<T>>
+    using ptr_u = std::unique_ptr<T, Dp>;
+
+    template <class T>
+    using ptr_w = std::weak_ptr<T>;
+
 #if USE_CLN_DATA_STRUCTURE == 1
     using short_real_number = cln::cl_R;
     using real_number = cln::cl_R;
@@ -116,6 +123,35 @@ namespace mc_particle
     using f_stream = std::fstream;
     using of_stream = std::ofstream;
     using if_stream = std::ifstream;
+
+    using vector2Dr = Eigen::Vector2<real_number>;
+    using vector3Dr = Eigen::Vector3<real_number>;
+    using vector4Dr = Eigen::Vector4<real_number>;
+    using vector2Di = Eigen::Vector2<integer_number>;
+    using vector3Di = Eigen::Vector3<integer_number>;
+    using vector4Di = Eigen::Vector4<integer_number>;
+
+    using matrix2r = Eigen::Matrix2<real_number>;
+    using matrix3r = Eigen::Matrix3<real_number>;
+    using matrix4r = Eigen::Matrix4<real_number>;
+    using matrix2i = Eigen::Matrix2<integer_number>;
+    using matrix3i = Eigen::Matrix3<integer_number>;
+    using matrix4i = Eigen::Matrix4<integer_number>;
+
+    template <int r = Eigen::Dynamic, int l = Eigen::Dynamic>
+    using matrixr = Eigen::Matrix<real_number, r, l>;
+    template <int r = Eigen::Dynamic, int l = Eigen::Dynamic>
+    using matrixi = Eigen::Matrix<integer_number, r, l>;
+
+    template <int l = Eigen::Dynamic>
+    using matrixLr = Eigen::Matrix<real_number, Eigen::Dynamic, l>;
+    template <int l = Eigen::Dynamic>
+    using matrixLi = Eigen::Matrix<integer_number, Eigen::Dynamic, l>;
+
+    template <class T, int r = Eigen::Dynamic>
+    using vectorr = Eigen::Vector<real_number, r>;
+    template <class T, int r = Eigen::Dynamic>
+    using vectori = Eigen::Vector<integer_number, r>;
 
     class particle_basic_options {
      public:
@@ -391,9 +427,11 @@ namespace mc_particle
 
      public:
         particle_image_matrix_options() : image_particle_options(),
-                                          turn_matrix {{1.0, 0.0, 0.0},
-                                                       {0.0, 1.0, 0.0},
-                                                       {0.0, 0.0, 1.0}} {}
+                                          turn_matrix {
+                                              {1.0, 0.0, 0.0},
+                                              {0.0, 1.0, 0.0},
+                                              {0.0, 0.0, 1.0}
+        } {}
         particle_image_matrix_options(Eigen::Matrix3<real_number> turn_matrix_,
                                       const image_particle_options &parent);
 
