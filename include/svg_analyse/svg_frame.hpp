@@ -18,11 +18,11 @@ namespace mc_particle::svg
             quad_bezier,
             cube_bezier
         };
-        virtual vector2Dr get_param_range() = 0;
-        virtual vector2Dr get_plot_ratio() = 0;
-        virtual vector2Dr operator()(real_number_cref t) { return get_line_value(t); }
-        virtual vector2Dr get_line_value(real_number_cref t) = 0;
-        virtual para_type type() = 0;
+        [[nodiscard]] virtual vector2Dr get_param_range() const = 0;
+        [[nodiscard]] virtual vector2Dr get_plot_ratio() const = 0;
+        [[nodiscard]] virtual vector2Dr operator()(real_number_cref t) const { return get_line_value(t); }
+        [[nodiscard]] virtual vector2Dr get_line_value(real_number_cref t) const = 0;
+        [[nodiscard]] virtual para_type type() const = 0;
     };
 
     class dim2_parameterized_line : dim2_parameterized_dim1 {
@@ -57,14 +57,14 @@ namespace mc_particle::svg
             return *this;
         };
         // from base
-        vector2Dr get_param_range() override { return {0, ratio(0) / ratio(1)}; }
-        vector2Dr get_plot_ratio() override { return ratio; }
-        vector2Dr get_line_value(real_number_cref t) override;
-        para_type type() override { return para_type::line; }
+        [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; }
+        [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }
+        [[nodiscard]] vector2Dr get_line_value(real_number_cref t) const override;
+        [[nodiscard]] para_type type() const override { return para_type::line; }
 
         // personalized
-        vector2Dr get_from() { return from; }
-        vector2Dr get_to() { return to; }
+        [[nodiscard]] vector2Dr get_from() const { return from; }
+        [[nodiscard]] vector2Dr get_to() const { return to; }
     };
     class dim2_parameterized_circle : dim2_parameterized_dim1 {
         vector2Dr center;
@@ -73,10 +73,10 @@ namespace mc_particle::svg
 
      public:
         // from base
-        vector2Dr get_param_range() override { return {0, ratio(0) / ratio(1)}; }
-        vector2Dr get_plot_ratio() override { return ratio; }
-        vector2Dr get_line_value(real_number_cref t) override;
-        para_type type() override { return para_type::circle; }
+        [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; }
+        [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }
+        [[nodiscard]] vector2Dr get_line_value(real_number_cref t) const override;
+        [[nodiscard]] para_type type() const override { return para_type::circle; }
 
         // personalized
         // TODO
@@ -87,10 +87,10 @@ namespace mc_particle::svg
         vector2Dr ratio;
 
      public:
-        vector2Dr get_param_range() override { return {0, ratio(0) / ratio(1)}; }
-        vector2Dr get_plot_ratio() override { return ratio; }
-        vector2Dr get_line_value(real_number_cref t) override;
-        para_type type() override { return para_type::ellipse; }
+        [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; }
+        [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }
+        [[nodiscard]] vector2Dr get_line_value(real_number_cref t) const override;
+        [[nodiscard]] para_type type() const override { return para_type::ellipse; }
     };
     class dim2_parameterized_arc : dim2_parameterized_dim1 {
         vector2Dr center;
@@ -99,10 +99,10 @@ namespace mc_particle::svg
         vector2Dr ratio;
 
      public:
-        vector2Dr get_param_range() override { return {0, ratio(0) / ratio(1)}; }
-        vector2Dr get_plot_ratio() override { return ratio; }
-        vector2Dr get_line_value(real_number_cref t) override;
-        para_type type() override { return para_type::arc; }
+        [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; }
+        [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }
+        [[nodiscard]] vector2Dr get_line_value(real_number_cref t) const override;
+        [[nodiscard]] para_type type() const override { return para_type::arc; }
     };
     class dim2_parameterized_elliarc : dim2_parameterized_dim1 {
         vector2Dr center;
@@ -111,10 +111,10 @@ namespace mc_particle::svg
         vector2Dr ratio;
 
      public:
-        vector2Dr get_param_range() override { return {0, ratio(0) / ratio(1)}; }
-        vector2Dr get_plot_ratio() override { return ratio; }
-        vector2Dr get_line_value(real_number_cref t) override;
-        para_type type() override { return para_type::elliarc; }
+        [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; }
+        [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }
+        [[nodiscard]] vector2Dr get_line_value(real_number_cref t) const override;
+        [[nodiscard]] para_type type() const override { return para_type::elliarc; }
     };
     class dim2_parameterized_quad_bezier : dim2_parameterized_dim1 {
         std::optional<vector2Dr> from;
@@ -123,10 +123,10 @@ namespace mc_particle::svg
         vector2Dr ratio;
 
      public:
-        vector2Dr get_param_range() override { return {0, ratio(0) / ratio(1)}; }
-        vector2Dr get_plot_ratio() override { return ratio; }
-        vector2Dr get_line_value(real_number_cref t) override;
-        para_type type() override { return para_type::quad_bezier; }
+        [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; }
+        [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }
+        [[nodiscard]] vector2Dr get_line_value(real_number_cref t) const override;
+        [[nodiscard]] para_type type() const override { return para_type::quad_bezier; }
     };
     class dim2_parameterized_cube_bezier : dim2_parameterized_dim1 {
         std::optional<vector2Dr> from;
@@ -136,10 +136,10 @@ namespace mc_particle::svg
         vector2Dr ratio;
 
      public:
-        vector2Dr get_param_range() override { return {0, ratio(0) / ratio(1)}; }
-        vector2Dr get_plot_ratio() override { return ratio; }
-        vector2Dr get_line_value(real_number_cref t) override;
-        para_type type() override { return para_type::cube_bezier; }
+        [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; }
+        [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }
+        [[nodiscard]] vector2Dr get_line_value(real_number_cref t) const override;
+        [[nodiscard]] para_type type() const override { return para_type::cube_bezier; }
     };
 
 
