@@ -60,7 +60,7 @@ endif()
 open_register_target(ROOT)
 clear_register_target(ROOT)
 
-find_package(Boost CONFIG REQUIRED COMPONENTS filesystem iostreams locale)
+find_package(Boost CONFIG REQUIRED COMPONENTS filesystem iostreams xpressive locale)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(GSL REQUIRED)
 find_package(PkgConfig REQUIRED)
