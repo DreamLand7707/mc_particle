@@ -5,3 +5,4 @@
 #include "datapack_func_options.hpp"
 #include "linear_particle.hpp"
 #include "cube_bezier_particle.hpp"
+#include "svg_analyse/svg_frame.hpp"
