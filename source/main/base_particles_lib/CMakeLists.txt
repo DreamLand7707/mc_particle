@@ -2,7 +2,7 @@ project(base_particles_lib LANGUAGES CXX)
 
 file(GLOB all_src RELATIVE ${PROJECT_SOURCE_DIR} "*.cpp")
 
-set(target_name base_particle_lib_lib)
+set(target_name base_particle_lib)
 
 add_library(${target_name} STATIC ${all_src})
 
