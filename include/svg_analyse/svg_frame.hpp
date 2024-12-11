@@ -218,24 +218,30 @@ namespace mc_particle::svg
         struct is_a_funcp;
         struct is_a_object;
 
-        template <class except_return_type, class func, class judge1>
+        template <class except_return_type, class func, class judge1, bool>
         struct type_extract : type_judge<void> {};
 
-        template <class T, class Ret, class... Args>
-        struct type_extract<T, Ret(Args...), std::enable_if_t<std::is_convertible_v<Ret, T>, is_a_funcp>>
+        template <class T, class Ret, class... Args, bool _b>
+        struct type_extract<T, Ret(Args...), std::enable_if_t<std::is_convertible_v<Ret, T>, is_a_funcp>, _b>
             : type_judge<std::remove_cvref_t<Args>...> {};
 
-    #define TYPE_OBJ_EXTRACT(X)                                                                            \
-        template <class T, class callable_obj>                                                         \
-        struct type_extract <                                                                          \
-            T,                                                                                         \
-            callable_obj,                                                                              \
-            std::enable_if <std::is_invocable_v<callable_obj, const X &> &&                            \
-                            std::is_convertible_v<std::invoke_result_t<callable_obj, const X &>, T> && \
-                            ( requires (std::invoke_result_t<callable_obj, const X &>                  \
-                                            (callable_obj::*p) (const X &))                            \
-                            { p = &callable_obj::operator(); }), is_a_object>                          \
-                            >                                                                          \
+    #define TYPE_OBJ_EXTRACT(X)                                                                                                 \
+        template <class T, class callable_obj, bool _b>                                                                         \
+        struct type_extract <                                                                                                   \
+            T,                                                                                                                  \
+            callable_obj,                                                                                                       \
+            std::enable_if_t <  std::is_invocable_v<callable_obj, const X &> &&                                                 \
+                                    std::is_convertible_v<std::invoke_result_t<callable_obj, const X &>, T> &&                  \
+                                    (   !                                                                                       \
+                                        (                                                                                       \
+                                            ( requires /* obj->const function->!const */                                        \
+                                              (std::invoke_result_t<callable_obj, const X &> (callable_obj::*p) (const X &))    \
+                                              { p = &callable_obj::operator(); }                                                \
+                                            ) && _b                                                                             \
+                                        )                                                                                       \
+                                    ),                                                                                          \
+                                is_a_object>,                                                                                   \
+            _b>                                                                                                                 \
             : type_judge<X> {}
 
         TYPE_OBJ_EXTRACT(dim2_parameterized_line);
@@ -251,7 +257,7 @@ namespace mc_particle::svg
         struct ptr0_obj1 : std::false_type {
             template <class Func>
             static std::optional<T> _i_func(const mc_particle::svg::dim2_parameterized_dim1 &param, Func &&func) {
-                using _type = type_extract<T, std::remove_cvref_t<Func>, is_a_funcp>;
+                using _type = type_extract<T, std::remove_cvref_t<Func>, is_a_funcp, std::is_const_v<Func>>;
                 if (_type::value == param.type()) {
                     const auto &ref = dynamic_cast<const typename _type::_use_type &>(param);
                     return static_cast<T>(func(ref));
@@ -265,7 +271,7 @@ namespace mc_particle::svg
         struct ptr0_obj1<Function, void, F> : std::false_type {
             template <class Func>
             static std::optional<bool> _i_func(const mc_particle::svg::dim2_parameterized_dim1 &param, Func &&func) {
-                using _type = type_extract<void, std::remove_cvref_t<Func>, is_a_funcp>;
+                using _type = type_extract<void, std::remove_cvref_t<Func>, is_a_funcp, std::is_const_v<Func>>;
                 if (_type::value == param.type()) {
                     const auto &ref = dynamic_cast<const typename _type::_use_type &>(param);
                     func(ref);
@@ -277,10 +283,10 @@ namespace mc_particle::svg
             }
         };
         template <class Function, class T>
-        struct ptr0_obj1<Function, T, std::enable_if<std::is_class_v<std::remove_cvref_t<Function>>, void>> : std::true_type {
+        struct ptr0_obj1<Function, T, std::enable_if_t<std::is_class_v<std::remove_cvref_t<Function>>, void>> : std::true_type {
             template <class Func>
             static std::optional<T> _i_func(const mc_particle::svg::dim2_parameterized_dim1 &param, Func &&func) {
-                using _type = type_extract<T, std::remove_cvref_t<Func>, is_a_object>;
+                using _type = type_extract<T, std::remove_cvref_t<Func>, is_a_object, std::is_const_v<Func>>;
                 if (_type::value == param.type()) {
                     const auto &ref = dynamic_cast<const typename _type::_use_type &>(param);
                     return static_cast<T>(func(ref));
@@ -291,10 +297,10 @@ namespace mc_particle::svg
             }
         };
         template <class Function>
-        struct ptr0_obj1<Function, void, std::enable_if<std::is_class_v<std::remove_cvref_t<Function>>, void>> : std::true_type {
+        struct ptr0_obj1<Function, void, std::enable_if_t<std::is_class_v<std::remove_cvref_t<Function>>, void>> : std::true_type {
             template <class Func>
             static std::optional<bool> _i_func(const mc_particle::svg::dim2_parameterized_dim1 &param, Func &&func) {
-                using _type = type_extract<void, std::remove_cvref_t<Func>, is_a_object>;
+                using _type = type_extract<void, std::remove_cvref_t<Func>, is_a_object, std::is_const_v<Func>>;
                 if (_type::value == param.type()) {
                     const auto &ref = dynamic_cast<const typename _type::_use_type &>(param);
                     func(ref);
@@ -305,7 +311,6 @@ namespace mc_particle::svg
                 }
             }
         };
-
     } // namespace _details
 } // namespace mc_particle::svg
 
