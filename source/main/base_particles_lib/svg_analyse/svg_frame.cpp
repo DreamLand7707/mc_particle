@@ -44,8 +44,8 @@ namespace mc_particle::svg
         else if (t_a < 0.0)
             t_a = 0.0;
 
-        real_number x = u * u * from(0) + 2 * u * t_a * ctrl(0) + t_a * t_a * to(0);
-        real_number y = u * u * from(1) + 2 * u * t_a * ctrl(1) + t_a * t_a * to(1);
+        real_number x = u * u * from.value()(0) + 2 * u * t_a * ctrl.value()(0) + t_a * t_a * to(0);
+        real_number y = u * u * from.value()(1) + 2 * u * t_a * ctrl.value()(1) + t_a * t_a * to(1);
 
         return vector2Dr {x, y};
     }
@@ -59,7 +59,7 @@ namespace mc_particle::svg
         else if (t_a < 0.0)
             t_a = 0.0;
 
-        vector2Dr point = u * u * u * from + 3 * u * u * t_a * ctrl_f + 3 * u * t_a * t_a * ctrl_t + t_a * t_a * t_a * to;
+        vector2Dr point = (u * u * u) * from.value() + (3 * u * u * t_a) * ctrl_f.value() + (3 * u * t_a * t_a) * ctrl_t + (t_a * t_a * t_a) * to;
 
         return point;
     }

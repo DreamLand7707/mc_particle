@@ -33,7 +33,7 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
         [[nodiscard]] virtual vector2Dr get_line_value(real_number_cref t) const = 0;
         [[nodiscard]] virtual para_type type() const = 0;
 
-    private:
+     private:
         template <class T, class Func>
         static T checkout_valid_function_obj_detail(const dim2_parameterized_dim1 &param, Func &&func);
         template <class T, class Func>
@@ -41,9 +41,9 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
 
      public:
         template <class T, class Func, class... Funcs>
-        static T checkout_valid_function(const dim2_parameterized_dim1 &param, Func && func, Funcs &&... funcs);
+        static T checkout_valid_function(const dim2_parameterized_dim1 &param, Func &&func, Funcs &&...funcs);
         template <class T, class Func>
-        static T checkout_valid_function(const dim2_parameterized_dim1 &param, Func && func);
+        static T checkout_valid_function(const dim2_parameterized_dim1 &param, Func &&func);
     };
     class dim2_parameterized_line : public dim2_parameterized_dim1 {
         vector2Dr from;
@@ -127,7 +127,7 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
         }
 
         // 析构函数
-        ~dim2_parameterized_circle() override = default;
+        ~dim2_parameterized_circle() = default;
         // 重写基类的纯虚函数
         [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; } // 获取参数范围
         [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }                     // 获取绘图比例
@@ -141,10 +141,7 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
         vector2Dr center;
         vector2Dr half_axs_length;
         vector2Dr ratio;
-    class dim2_parameterized_ellipse : dim2_parameterized_dim1 {
-        vector2Dr center;          // 椭圆中心坐标
-        vector2Dr half_axs_length; // 半轴长度
-        vector2Dr ratio;           // 比例因子
+
 
      public:
         // 默认构造函数
@@ -181,7 +178,7 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
         }
 
         // 析构函数
-        ~dim2_parameterized_ellipse() override = default;
+        ~dim2_parameterized_ellipse() = default;
 
         [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; } // 获取参数范围
         [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }                     // 获取绘图比例
@@ -231,7 +228,7 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
         }
 
         // 析构函数
-        ~dim2_parameterized_arc() override = default;
+        ~dim2_parameterized_arc() = default;
 
         [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; } // 获取参数范围
         [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }                     // 获取绘图比例
@@ -281,7 +278,7 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
         }
 
         // 析构函数
-        ~dim2_parameterized_elliarc() override = default;
+        ~dim2_parameterized_elliarc() = default;
 
         [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; } // 获取参数范围
         [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }                     // 获取绘图比例
@@ -340,7 +337,7 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
         }
 
         // 析构函数
-        ~dim2_parameterized_quad_bezier() override = default;
+        ~dim2_parameterized_quad_bezier() = default;
 
         [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; } // 获取参数范围
         [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }                     // 获取绘图比例
@@ -412,7 +409,7 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
         }
 
         // 析构函数
-        ~dim2_parameterized_cube_bezier() override = default;
+        ~dim2_parameterized_cube_bezier() = default;
 
         [[nodiscard]] vector2Dr get_param_range() const override { return {0, ratio(0) / ratio(1)}; } // 获取参数范围
         [[nodiscard]] vector2Dr get_plot_ratio() const override { return ratio; }                     // 获取绘图比例
@@ -443,23 +440,26 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
     namespace _details
     {
         using para_type = dim2_parameterized_dim1::para_type;
-    #define DIM2_USING(X) using dim2_parameterized_dim1::para_type::X
-        DIM2_USING(error      );
-        DIM2_USING(line       );
-        DIM2_USING(circle     );
-        DIM2_USING(ellipse    );
-        DIM2_USING(arc        );
-        DIM2_USING(elliarc    );
+#define DIM2_USING(X) using dim2_parameterized_dim1::para_type::X
+        DIM2_USING(error);
+        DIM2_USING(line);
+        DIM2_USING(circle);
+        DIM2_USING(ellipse);
+        DIM2_USING(arc);
+        DIM2_USING(elliarc);
         DIM2_USING(quad_bezier);
         DIM2_USING(cube_bezier);
-    #undef DIM2_USING
+#undef DIM2_USING
 
         template <class T>
-        struct param_type_number : std::integral_constant<para_type, error> { using _use_type = T; };
-    #define PARAM_TYPE_NUMBER(X, Y)                                         \
-        template<>                                                          \
-        struct param_type_number<X> : std::integral_constant<para_type, Y>  \
-        { using _use_type = X; }
+        struct param_type_number : std::integral_constant<para_type, error> {
+            using _use_type = T;
+        };
+#define PARAM_TYPE_NUMBER(X, Y)                                          \
+    template <>                                                          \
+    struct param_type_number<X> : std::integral_constant<para_type, Y> { \
+        using _use_type = X;                                             \
+    }
         PARAM_TYPE_NUMBER(dim2_parameterized_line, line);
         PARAM_TYPE_NUMBER(dim2_parameterized_circle, circle);
         PARAM_TYPE_NUMBER(dim2_parameterized_ellipse, ellipse);
@@ -467,7 +467,7 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
         PARAM_TYPE_NUMBER(dim2_parameterized_elliarc, elliarc);
         PARAM_TYPE_NUMBER(dim2_parameterized_quad_bezier, quad_bezier);
         PARAM_TYPE_NUMBER(dim2_parameterized_cube_bezier, cube_bezier);
-    #undef PARAM_TYPE_NUMBER
+#undef PARAM_TYPE_NUMBER
 
         template <class... ts>
         struct type_judge : param_type_number<void> {};
@@ -484,7 +484,7 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
         struct type_extract<T, Ret(Args...), std::enable_if_t<std::is_convertible_v<Ret, T>, is_a_funcp>>
             : type_judge<std::remove_cvref_t<Args>...> {};
 
-    #define TYPE_OBJ_EXTRACT(X)                                                                            \
+#define TYPE_OBJ_EXTRACT(X)                                                                            \
         template <class T, class callable_obj>                                                         \
         struct type_extract <                                                                          \
             T,                                                                                         \
@@ -493,7 +493,8 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
                             std::is_convertible_v<std::invoke_result_t<callable_obj, const X &>, T> && \
                             ( requires (std::invoke_result_t<callable_obj, const X &>                  \
                                             (callable_obj::*p) (const X &))                            \
-                            { p = &callable_obj::operator(); }), is_a_object>                          \
+                            {                                                                          \
+        p = &callable_obj::operator(); }), is_a_object>                          \
                             >                                                                          \
             : type_judge<X> {}
 
@@ -504,7 +505,7 @@ namespace mc_particle::svg // 定义命名空间 mc_particle::svg
         TYPE_OBJ_EXTRACT(dim2_parameterized_elliarc);
         TYPE_OBJ_EXTRACT(dim2_parameterized_quad_bezier);
         TYPE_OBJ_EXTRACT(dim2_parameterized_cube_bezier);
-    #undef TYPE_OBJ_EXTRACT
+#undef TYPE_OBJ_EXTRACT
 
         template <class Function, class T, class = void>
         struct ptr0_obj1 : std::false_type {
